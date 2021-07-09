@@ -174,3 +174,123 @@ ggplot(clean_data, aes(x = MonthName, fill = MonthName)) +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())+
   labs(x = "Day of Week", y = "Frecuency")
+# -------------------------------------------------------------------
+
+        # ---- Analisis estadístico ----
+
+#------------------------------------------------------------------------
+
+  # Función para crear tablas de frecuencia
+
+TableCreation <- function(y){
+  data.frame(table(y),
+             round(x = prop.table(x = table(y)) * 100, 1))
+}
+
+#------------------------------------------------------------------------
+
+  # Revisa los datos y crea 4 categorias entre el rango de tus gastos
+
+summary(clean_data$FareAmount)
+
+  # Este es un ejemplo, elige 4 categorías en el rango 
+
+FareAmountGroups <- cut(clean_data$FareAmount,
+                        breaks = c(-Inf, 949, 1499, 2499, 3999,Inf),
+                        labels = c("< 950", "950 - 1499", "1500 - 2499","2500-3999","4000+" ))
+
+  # Creámos la tabla de frecuencia para los gastos y 
+  # la convertimos en data frame
+
+tabla <- as.data.frame( TableCreation(FareAmountGroups))
+
+  # Estas variables son para poder visualizar los datos con 
+  # labels descriptivas
+
+Rango <- tabla$y
+
+Frequency <- tabla$Freq
+
+Percent <- tabla$Freq.1
+
+  # Si tenemos datos dispersos, esta tabla de 
+  # frecuencia nos permite identificar mejor nuestros gastos
+
+tablaFrecuencia <- data.frame(Rango, Frequency, Percent)
+
+tablaFrecuencia
+
+#------------------------------------------------------------------------
+
+  # Histograma de frecuencia de la tarifa de nuestros viajes 
+
+ggplotly( ggplot(clean_data, aes(x = FareAmount)) + 
+            geom_histogram(fill="lightblue",color="black")+
+            theme(panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank())+
+            labs(x = "Fare", y = "Frecuency"))
+#------------------------------------------------------------------------
+
+
+  # Gráfico QQNORM
+#qqnorm(clean_data$FareAmount)+
+#  theme(panel.background = element_blank(),
+#        panel.grid.major = element_blank(),
+#        panel.grid.minor = element_blank())
+#------------------------------------------------------------------------
+
+  # Histograma de densidad de nuestros gastos
+
+ggplotly( ggplot(clean_data, aes(x = FareAmount)) + 
+            geom_histogram(aes(y = ..density..),
+                           fill="lightblue",color="black")+
+            theme(panel.background = element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank())+
+            labs(x = "Fare", y = "Desnsity")+
+            geom_density(alpha=.2,fill="red"))
+#------------------------------------------------------------------------
+
+  # Obtenemos media y las medidas de disperción de los gastos
+
+mediaTarifa <- mean(clean_data$FareAmount)
+
+VarianzaTarifa <- var(clean_data$FareAmount)
+
+desvEstTarifa <-sd(clean_data$FareAmount)
+
+Coef <- (desvEstFA/mediaFA)*100
+
+  # Creé este data frame para poder visualizar mejor estos datos
+  # Interpretalos, ¿Hay mucha variabilidad en tus gastos?
+
+MedidasDisp <- data.frame(MediaTarifa, Varianza, 
+                          DesviacionEst,`CoefVar(%)`)
+MedidasDisp
+
+#------------------------------------------------------------------------
+
+  # Calculamos la curtosis
+summary(clean_data$FareAmount)
+library(psych)
+
+kurtosi(clean_data$FareAmount)/sqrt(6/23) 
+
+#------------------------------------------------------------------------
+
+  # Función para calcular la moda
+
+mode <- function(x) {
+  return((names(which.max(table(x)))))
+}
+
+  # Descubramos la moda de nuestras variables de estudio 
+
+mode(clean_data$ProductType)
+
+mode(clean_data$FareAmount)
+
+summary(clean_data$FareAmount)
+
+#------------------------------------------------------------------------

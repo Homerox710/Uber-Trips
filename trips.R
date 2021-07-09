@@ -75,3 +75,102 @@ clean_data <- data.frame(ProductType = ProductType, OrderStatus = OrderStatus,
                          FareAmount = FareAmount, FareCurrency = FareCurrency,
                          MonthName = MonthName, DayOfWeek = DayOfWeek,
                          WeekOfYear = WeekOfYear)
+
+#------------------------------------------------------------------------
+
+#                       ---- EDA ----
+
+#------------------------------------------------------------------------
+
+  # Cantidad de viajes relacionada con el tipo de producto
+
+ggplotly(
+  ggplot(clean_data,aes(x =ProductType, fill = ProductType))+
+    geom_bar(fill="lightblue",color="black")+  
+    theme(panel.background = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank())+
+    labs(x = "Product Type", y = "Trips"))
+#------------------------------------------------------------------------
+
+  # Porcentaje de viajes según el tipo de producto
+
+ggplot(clean_data, aes(x = ProductType)) +  
+  geom_bar(aes(y = (..count..)/sum(..count..)),
+           fill="lightblue",color="black")+
+  scale_y_continuous(labels=scales::percent)+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x = "Product Type", y = "Percent")
+
+#------------------------------------------------------------------------
+
+  # Creamos esta variable para calcular los gastos mensuales
+
+gasto_mensual <- clean_data %>% 
+  group_by(MonthName) %>%
+  dplyr::summarize( sum(FareAmount))
+
+  # Resumen de nuesto gasto mensual
+
+summary(gasto_mensual$`sum(FareAmount)`)
+
+#------------------------------------------------------------------------
+
+
+  # Creamos esta variable para calcular nuestros gastos semanales
+
+gasto_semanal <- clean_data %>% 
+  group_by(WeekOfYear) %>%
+  dplyr::summarize( sum(FareAmount))
+
+  # Resumen de nuesto gasto semanal
+
+summary(gasto_semanal$`sum(FareAmount)`)
+
+
+#------------------------------------------------------------------------
+
+  # Gráfico línea de tendencia con respecto a los gastos mensuales
+
+ggplotly(ggplot(gasto_mensual, aes(x=MonthName, y=`sum(FareAmount)`, group=1)) +
+           geom_path()+
+           geom_point()+
+           theme(panel.background = element_blank(),
+                 panel.grid.major = element_blank(),
+                 panel.grid.minor = element_blank())+
+           labs(x = "Month", y = "Expense"))
+
+#------------------------------------------------------------------------
+
+  # Gráfico línea de tendencia con respecto a los gastos semanales
+
+ggplotly(ggplot(gasto_semanal, aes(x=WeekOfYear, y=`sum(FareAmount)`, group=1)) +
+           geom_path()+
+           geom_point()+
+           theme(panel.background = element_blank(),
+                 panel.grid.major = element_blank(),
+                 panel.grid.minor = element_blank())+
+           labs(x = "Month", y = "Expense"))
+
+#------------------------------------------------------------------------
+ 
+ # Frecuencia de viajes según el día de la semana
+
+ggplot(clean_data, aes(x = DayOfWeek, fill = DayOfWeek)) +
+  geom_bar(width = 1, color="black")+ coord_polar()+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x = "Day of Week", y = "Frecuency")
+#------------------------------------------------------------------------
+
+  # Frecuencia de viajes según el mes
+
+ggplot(clean_data, aes(x = MonthName, fill = MonthName)) +
+  geom_bar(width = 1, color="black")+ coord_polar()+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  labs(x = "Day of Week", y = "Frecuency")

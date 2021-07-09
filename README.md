@@ -13,4 +13,4 @@ In these R Scripts you will find how to request, clean, manipulate, plot and int
 
 ### When you have ready your Uber Data file
 
-First, clone my repo, and put your csv file into it the Uber Trips file´s name is trips_data.csv, after this you just need to run the .Rmd file and click in "Knit", after this you will have a quick Statistical analisis of your data in a HTML file, and also a clean data frame to do what you want with your Uber Data.
+First, clone my repo, and put your csv file into it, the Uber Trips file´s name is trips_data.csv, after this you just need to run the .Rmd file and click in "Knit", after this you will have a quick Statistical analisis of your data in a HTML file, and also a clean data frame to do what you want with your Uber Data.
